@@ -27,7 +27,6 @@ def getA(transactions,items,maxLength,num):
         for j in index:
             t = source[int(j)][0]
             tmp.append(t)
-        if i == 1: print(index)
         tmp.sort()
         A.append(set(tmp))
 #    #A.sort()
@@ -75,7 +74,7 @@ def getProfitExpectation(res, clickRate):
     
 
 if __name__ == "__main__":
-    transactions = getTransactions("./Experiment/retail.txt")
+    transactions = getTransactions("./retail.txt")
     items = getItems(transactions)
     #np.random.seed(10)
     profits = np.random.random(size=(len(items))).tolist()
@@ -88,13 +87,15 @@ if __name__ == "__main__":
     A = getA(transactions,items,5,100)
     #print(A)
     gamma = 0.5
-    while gamma<3.1:
-        eop, eoc = 0, 0
-        for a in A:
-            res = getTopK(transactions, a, profits, gamma = gamma)
-            p, c = getProfitExpectation(res, clickRate)
-            eop+=p
-            eoc+=c
-        print("%.1f"%gamma,'\t', eop,'\t', eoc)
-        gamma+=0.1
+    with open("result.csv", "w") as f:
+	    while gamma<3.1:
+	        eop, eoc = 0, 0
+	        for a in A:
+	            res = getTopK(transactions, a, profits, gamma = gamma)
+	            p, c = getProfitExpectation(res, clickRate)
+	            eop+=p
+	            eoc+=c
+	        print("%.1f"%gamma,'\t', eop,'\t', eoc)
+	        f.write(str(round(gamma, 1))+","+str(eop)+"," +str(eoc)+"\n")
+	        gamma+=0.1
     
